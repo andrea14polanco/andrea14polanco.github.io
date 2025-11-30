@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuMon Games | Indie Game Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-pink: #ff2d95;
+            --neon-cyan: #00f5ff;
+            --neon-purple: #bf00ff;
+            --dark-bg: #0a0a0f;
+            --darker-bg: #050508;
+            --card-bg: #12121a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --grid-color: rgba(0, 245, 255, 0.03);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Animated grid background */
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: -1;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+            100% { transform: perspective(500px) rotateX(60deg) translateY(50px); }
+        }
+
+        /* Gradient overlay */
+        .gradient-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 20% 0%, rgba(191, 0, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(255, 45, 149, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: linear-gradient(to bottom, var(--darker-bg), transparent);
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 0.3em;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(0, 245, 255, 0.5);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--neon-cyan);
+            text-shadow: 0 0 20px var(--neon-cyan);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--neon-cyan);
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Language Selector */
+        .lang-selector {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 4px;
+            gap: 4px;
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+            color: white;
+            box-shadow: 0 0 20px rgba(255, 45, 149, 0.4);
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 6rem 2rem 4rem;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: rgba(0, 245, 255, 0.1);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--neon-cyan);
+            margin-bottom: 2rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 245, 255, 0.2); }
+            50% { box-shadow: 0 0 40px rgba(0, 245, 255, 0.4); }
+        }
+
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(3rem, 10vw, 6rem);
+            font-weight: 900;
+            letter-spacing: 0.1em;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--neon-cyan) 50%, var(--neon-pink) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            font-weight: 400;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+            color: white;
+            border: none;
+            box-shadow: 0 0 30px rgba(255, 45, 149, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(255, 45, 149, 0.5);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--neon-cyan);
+            border: 2px solid var(--neon-cyan);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 245, 255, 0.1);
+            box-shadow: 0 0 30px rgba(0, 245, 255, 0.3);
+            transform: translateY(-3px);
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-15px); }
+            60% { transform: translateX(-50%) translateY(-7px); }
+        }
+
+        .scroll-indicator svg {
+            width: 30px;
+            height: 30px;
+            stroke: var(--neon-cyan);
+            opacity: 0.5;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 6rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-tag {
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--neon-pink);
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        /* Games Grid */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 45, 149, 0.1), rgba(0, 245, 255, 0.1));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .game-card:hover::before {
+            opacity: 1;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(0, 245, 255, 0.3);
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(0, 245, 255, 0.1);
+        }
+
+        .game-thumbnail {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            background: linear-gradient(135deg, var(--darker-bg), var(--card-bg));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .game-thumbnail .placeholder {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            opacity: 0.3;
+        }
+
+        .game-status {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.4rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-radius: 20px;
+            z-index: 2;
+        }
+
+        .status-released {
+            background: linear-gradient(135deg, var(--neon-cyan), #00c8d4);
+            color: var(--darker-bg);
+        }
+
+        .status-development {
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+            color: white;
+        }
+
+        .game-info {
+            padding: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .game-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .game-genre {
+            font-size: 0.85rem;
+            color: var(--neon-cyan);
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .game-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .game-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .game-tag {
+            padding: 0.3rem 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .game-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .game-link {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .game-link.itch {
+            background: linear-gradient(135deg, #fa5c5c, #ff7b7b);
+            color: white;
+        }
+
+        .game-link.itch:hover {
+            box-shadow: 0 5px 20px rgba(250, 92, 92, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .game-link.play {
+            background: rgba(0, 245, 255, 0.1);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+        }
+
+        .game-link.play:hover {
+            background: rgba(0, 245, 255, 0.2);
+            box-shadow: 0 5px 20px rgba(0, 245, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* About Section */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        @media (max-width: 900px) {
+            .about-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
+
+        .about-text h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--text-primary), var(--neon-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .about-text p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .about-stats {
+            display: flex;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .about-stats {
+                justify-content: center;
+            }
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--neon-pink);
+            text-shadow: 0 0 30px rgba(255, 45, 149, 0.5);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .about-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .studio-logo-large {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--card-bg), var(--darker-bg));
+            border: 2px solid rgba(0, 245, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .studio-logo-large::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: var(--neon-cyan);
+            border-right-color: var(--neon-pink);
+            animation: spin 8s linear infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .studio-logo-large span {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4rem;
+            font-weight: 900;
+            letter-spacing: 0.2em;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Contact Section */
+        #contact {
+            text-align: center;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem 2rem;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .contact-link:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 5px 30px rgba(0, 245, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .contact-link svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .contact-link span {
+            font-weight: 500;
+            letter-spacing: 0.05em;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--neon-cyan);
+            text-decoration: none;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 1.5rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .about-stats {
+                gap: 2rem;
+            }
+
+            .contact-links {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* Language visibility */
+        [data-lang="en"] .es { display: none; }
+        [data-lang="es"] .en { display: none; }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    <div class="gradient-overlay"></div>
+
+    <nav>
+        <div class="logo">LUMON</div>
+        <div class="nav-right">
+            <ul class="nav-links">
+                <li><a href="#games"><span class="en">Games</span><span class="es">Juegos</span></a></li>
+                <li><a href="#about"><span class="en">About</span><span class="es">Sobre Mí</span></a></li>
+                <li><a href="#contact"><span class="en">Contact</span><span class="es">Contacto</span></a></li>
+            </ul>
+            <div class="lang-selector">
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="es">ES</button>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="en">Indie Game Studio</span>
+                <span class="es">Estudio de Juegos Indie</span>
+            </div>
+            <h1>LUMON GAMES</h1>
+            <p class="hero-subtitle">
+                <span class="en">Creating satirical simulations and thought-provoking experiences. Where dark humor meets game design.</span>
+                <span class="es">Creando simulaciones satíricas y experiencias que invitan a la reflexión. Donde el humor negro se encuentra con el diseño de juegos.</span>
+            </p>
+            <div class="hero-cta">
+                <a href="#games" class="btn btn-primary">
+                    <span class="en">Explore Games</span>
+                    <span class="es">Explorar Juegos</span>
+                </a>
+                <a href="https://andrea14polancoo.itch.io/" target="_blank" class="btn btn-secondary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3.13 1.338C2.08 1.96 1.5 3.407 1.5 4.5v1.03c0 1.17.473 2.236 1.24 3.011.766.774 1.821 1.254 3.01 1.254 1.19 0 2.245-.48 3.01-1.254.766-.775 1.24-1.84 1.24-3.01 0 1.17.474 2.235 1.24 3.01.766.774 1.82 1.254 3.01 1.254 1.19 0 2.244-.48 3.01-1.254.766-.775 1.24-1.84 1.24-3.01v-1.03c0-1.093-.58-2.54-1.63-3.162C15.84.715 13.323.5 12 .5c-1.323 0-3.84.215-4.87.838zM5.75 10.784c-.46 0-.903-.09-1.312-.253v8.97c0 1.658 1.342 3 3 3h9.124c1.658 0 3-1.342 3-3v-8.97c-.409.163-.852.253-1.312.253-1.037 0-1.98-.41-2.682-1.079-.172.164-.357.315-.556.45-.765.516-1.681.79-2.637.79-.955 0-1.872-.274-2.637-.79-.199-.135-.384-.286-.556-.45-.702.669-1.645 1.079-2.682 1.079zm5.75 1.662c1.519 0 2.75 1.231 2.75 2.75v3.5c0 1.519-1.231 2.75-2.75 2.75s-2.75-1.231-2.75-2.75v-3.5c0-1.519 1.231-2.75 2.75-2.75z"/>
+                    </svg>
+                    itch.io
+                </a>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <path d="M12 5v14M5 12l7 7 7-7"/>
+            </svg>
+        </div>
+    </section>
+
+    <section id="games">
+        <div class="section-header">
+            <p class="section-tag">
+                <span class="en">Portfolio</span>
+                <span class="es">Portafolio</span>
+            </p>
+            <h2 class="section-title">
+                <span class="en">My Games</span>
+                <span class="es">Mis Juegos</span>
+            </h2>
+        </div>
+
+        <div class="games-grid">
+            <!-- Game 1: Once Again Rejected -->
+            <div class="game-card">
+                <div class="game-thumbnail">
+                    <span class="placeholder">🏢</span>
+                    <span class="game-status status-released">
+                        <span class="en">Released</span>
+                        <span class="es">Lanzado</span>
+                    </span>
+                </div>
+                <div class="game-info">
+                    <h3 class="game-title">Once Again... Rejected</h3>
+                    <p class="game-genre">
+                        <span class="en">Satirical Simulation</span>
+                        <span class="es">Simulación Satírica</span>
+                    </p>
+                    <p class="game-description">
+                        <span class="en">A darkly comedic hiring simulator where you're trapped in an endless loop of rejecting increasingly desperate job applicants. No one is ever good enough.</span>
+                        <span class="es">Un simulador de contratación con humor negro donde estás atrapado en un bucle infinito rechazando solicitantes de empleo cada vez más desesperados. Nadie es lo suficientemente bueno.</span>
+                    </p>
+                    <div class="game-tags">
+                        <span class="game-tag">Simulation</span>
+                        <span class="game-tag">Dark Humor</span>
+                        <span class="game-tag">Game Jam</span>
+                        <span class="game-tag">Godot</span>
+                    </div>
+                    <div class="game-links">
+                        <a href="https://andrea14polancoo.itch.io/once-again-rejected" target="_blank" class="game-link itch">
+                            <span class="en">View on itch.io</span>
+                            <span class="es">Ver en itch.io</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game 2: Coming Soon Placeholder -->
+            <div class="game-card">
+                <div class="game-thumbnail">
+                    <span class="placeholder">🎮</span>
+                    <span class="game-status status-development">
+                        <span class="en">In Dev</span>
+                        <span class="es">En Desarrollo</span>
+                    </span>
+                </div>
+                <div class="game-info">
+                    <h3 class="game-title">
+                        <span class="en">New Project</span>
+                        <span class="es">Nuevo Proyecto</span>
+                    </h3>
+                    <p class="game-genre">
+                        <span class="en">Coming Soon</span>
+                        <span class="es">Próximamente</span>
+                    </p>
+                    <p class="game-description">
+                        <span class="en">Something new is brewing in the LuMon labs. Stay tuned for more satirical simulation goodness.</span>
+                        <span class="es">Algo nuevo se está gestando en los laboratorios de LuMon. Mantente atento para más bondades de simulación satírica.</span>
+                    </p>
+                    <div class="game-tags">
+                        <span class="game-tag">???</span>
+                        <span class="game-tag">TBA</span>
+                    </div>
+                    <div class="game-links">
+                        <a href="#contact" class="game-link play">
+                            <span class="en">Get Notified</span>
+                            <span class="es">Recibir Notificación</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="section-header">
+            <p class="section-tag">
+                <span class="en">The Studio</span>
+                <span class="es">El Estudio</span>
+            </p>
+            <h2 class="section-title">
+                <span class="en">About LuMon</span>
+                <span class="es">Sobre LuMon</span>
+            </h2>
+        </div>
+
+        <div class="about-content">
+            <div class="about-text">
+                <h3>
+                    <span class="en">Crafting Experiences That Make You Think</span>
+                    <span class="es">Creando Experiencias Que Te Hacen Pensar</span>
+                </h3>
+                <p>
+                    <span class="en">LuMon is an indie game studio based in Cologne, Germany. We specialize in creating satirical simulations that blend dark humor with thoughtful commentary on modern life.</span>
+                    <span class="es">LuMon es un estudio de juegos indie con base en Colonia, Alemania. Nos especializamos en crear simulaciones satíricas que combinan humor negro con comentarios reflexivos sobre la vida moderna.</span>
+                </p>
+                <p>
+                    <span class="en">Every game is designed to entertain while making you question the absurdities of everyday systems—from corporate hiring practices to the bureaucratic mazes we all navigate.</span>
+                    <span class="es">Cada juego está diseñado para entretener mientras te hace cuestionar las absurdidades de los sistemas cotidianos—desde las prácticas de contratación corporativa hasta los laberintos burocráticos que todos navegamos.</span>
+                </p>
+                <div class="about-stats">
+                    <div class="stat">
+                        <div class="stat-number">1+</div>
+                        <div class="stat-label">
+                            <span class="en">Games Released</span>
+                            <span class="es">Juegos Lanzados</span>
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">∞</div>
+                        <div class="stat-label">
+                            <span class="en">Ideas Brewing</span>
+                            <span class="es">Ideas en Desarrollo</span>
+                        </div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">
+                            <span class="en">Passion</span>
+                            <span class="es">Pasión</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="about-visual">
+                <div class="studio-logo-large">
+                    <span>LM</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="section-header">
+            <p class="section-tag">
+                <span class="en">Get In Touch</span>
+                <span class="es">Ponte en Contacto</span>
+            </p>
+            <h2 class="section-title">
+                <span class="en">Let's Connect</span>
+                <span class="es">Conectemos</span>
+            </h2>
+        </div>
+
+        <div class="contact-links">
+            <a href="https://andrea14polancoo.itch.io/" target="_blank" class="contact-link">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3.13 1.338C2.08 1.96 1.5 3.407 1.5 4.5v1.03c0 1.17.473 2.236 1.24 3.011.766.774 1.821 1.254 3.01 1.254 1.19 0 2.245-.48 3.01-1.254.766-.775 1.24-1.84 1.24-3.01 0 1.17.474 2.235 1.24 3.01.766.774 1.82 1.254 3.01 1.254 1.19 0 2.244-.48 3.01-1.254.766-.775 1.24-1.84 1.24-3.01v-1.03c0-1.093-.58-2.54-1.63-3.162C15.84.715 13.323.5 12 .5c-1.323 0-3.84.215-4.87.838zM5.75 10.784c-.46 0-.903-.09-1.312-.253v8.97c0 1.658 1.342 3 3 3h9.124c1.658 0 3-1.342 3-3v-8.97c-.409.163-.852.253-1.312.253-1.037 0-1.98-.41-2.682-1.079-.172.164-.357.315-.556.45-.765.516-1.681.79-2.637.79-.955 0-1.872-.274-2.637-.79-.199-.135-.384-.286-.556-.45-.702.669-1.645 1.079-2.682 1.079zm5.75 1.662c1.519 0 2.75 1.231 2.75 2.75v3.5c0 1.519-1.231 2.75-2.75 2.75s-2.75-1.231-2.75-2.75v-3.5c0-1.519 1.231-2.75 2.75-2.75z"/>
+                </svg>
+                <span>itch.io</span>
+            </a>
+            <a href="mailto:andrea14polancoo@gmail.com" class="contact-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                <span>Email</span>
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <p>
+            <span class="en">© 2025 LuMon Games. Made with 💜 in Cologne, Germany.</span>
+            <span class="es">© 2025 LuMon Games. Hecho con 💜 en Colonia, Alemania.</span>
+        </p>
+    </footer>
+
+    <script>
+        // Language Selector
+        const langBtns = document.querySelectorAll('.lang-btn');
+        const html = document.documentElement;
+
+        langBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const lang = btn.dataset.lang;
+                
+                // Update active button
+                langBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Update HTML lang attribute
+                html.dataset.lang = lang;
+                html.lang = lang;
+                
+                // Save preference
+                localStorage.setItem('lumon-lang', lang);
+            });
+        });
+
+        // Load saved language preference
+        const savedLang = localStorage.getItem('lumon-lang');
+        if (savedLang) {
+            html.dataset.lang = savedLang;
+            html.lang = savedLang;
+            langBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === savedLang);
+            });
+        }
+
+        // Smooth reveal animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.game-card, .about-content, .contact-links').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
